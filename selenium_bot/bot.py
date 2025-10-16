@@ -282,6 +282,24 @@ class CertificateBot:
                             search_button.click()
                             print("🔍 Clicked Search button")
                             time.sleep(3)
+                            try:
+                                # Wait for popup to appear (if it does)
+                                WebDriverWait(self.driver, 3).until(
+                                    EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'popup') or contains(@role, 'alert') or contains(text(),'Success') or contains(text(),'Error')]"))
+                                )
+                                print("⚠️ Popup detected — waiting for it to close...")
+                            
+                                # Wait for popup to disappear
+                                WebDriverWait(self.driver, 5).until_not(
+                                    EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'popup') or contains(@role, 'alert') or contains(text(),'Success') or contains(text(),'Error')]"))
+                                )
+                                print("✅ Popup closed automatically")
+
+                                current_from = current_to + timedelta(days=1)
+
+                            
+                            except TimeoutException:
+                                print("✅ No popup appeared, continuing...")
                         except Exception as e:
                             print(f"⚠️ Search click failed: {e}")
                             break
@@ -302,6 +320,19 @@ class CertificateBot:
                                 EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Search']"))
                             )
                             search_button.click()
+                            # # --- Click Search drawback pending status ---
+                            # try:
+                            #     download_button = wait.until(
+                            #         EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Download Excel']"))
+                            #     )
+                            #     time.sleep(1)
+                            #     download_button.click()
+                            #     print(" Clicked download button")
+                            #     time.sleep(3)
+                            # except Exception as e:
+                            #     print(f" download not visible: {e}")
+                            #     current_from = current_to + timedelta(days=1)
+                            #     continue
                             print("🔍 Clicked download button")
                             time.sleep(1)
                         
